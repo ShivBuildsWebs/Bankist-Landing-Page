@@ -9,11 +9,11 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const header = document.querySelector('.header');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
 const tabs = document.querySelectorAll('.operations__tab');
 const tabContainer = document.querySelector('.operations__tab-container');
 const tabContent = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
+const allSection = document.querySelectorAll('.section');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -109,7 +109,25 @@ const stickyNav = function (entries) {
 const headerObserver = new IntersectionObserver(stickyNav, {
   root: null,
   threshold: 0,
-  rootMargin: `-${navHeight}px`,
+  rootMargin: `${navHeight}px`,
 });
 
 headerObserver.observe(header);
+
+const revealSec = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObs = new IntersectionObserver(revealSec, {
+  root: null,
+  threshold: 0.1,
+});
+
+allSection.forEach(function (section) {
+  sectionObs.observe(section);
+  section.classList.add('section--hidden');
+});
