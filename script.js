@@ -115,11 +115,11 @@ const headerObserver = new IntersectionObserver(stickyNav, {
 headerObserver.observe(header);
 
 const revealSec = function (entries, observer) {
-  const [entry] = entries;
-  console.log(entry);
-  if (!entry.isIntersecting) return;
-  entry.target.classList.remove('section--hidden');
-  observer.unobserve(entry.target);
+  entries.forEach(function (entry) {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.remove('section--hidden');
+    observer.unobserve(entry.target);
+  });
 };
 
 const sectionObs = new IntersectionObserver(revealSec, {
