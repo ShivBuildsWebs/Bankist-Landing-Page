@@ -15,6 +15,10 @@ const tabContent = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
 const allSection = document.querySelectorAll('.section');
 const imgTargets = document.querySelectorAll('img[data-src]');
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+const dotContainer = document.querySelector('.dots');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -152,3 +156,77 @@ const imgObs = new IntersectionObserver(imgLoader, {
 });
 
 imgTargets.forEach(img => imgObs.observe(img));
+
+let currentSlide = 0;
+
+function showSlides() {
+  slides.forEach(function (slide, index) {
+    slide.style.transform = 'translateX(' + 100 * (index - currentSlide) + '%)';
+  });
+}
+
+showSlides();
+
+function nextSlide() {
+  if (currentSlide === slides.length - 1) {
+    currentSlide = 0;
+  } else {
+    currentSlide = currentSlide + 1;
+  }
+
+  showSlides();
+  activateDot(currentSlide);
+}
+
+function prevSlide() {
+  if (currentSlide === 0) {
+    currentSlide = slides.length - 1;
+  } else {
+    currentSlide = currentSlide - 1;
+  }
+
+  showSlides();
+}
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowRight') {
+    nextSlide();
+  }
+  if (e.key === 'ArrowLeft') {
+    prevSlide();
+  }
+});
+
+function createDots() {
+  slides.forEach(function (_, index) {
+    const dot = document.createElement('button');
+    dot.classList.add('dots__dot');
+    dot.dataset.slide = index;
+    dotContainer.appendChild(dot);
+  });
+}
+
+function activateDot(slideNumber) {
+  const dots = document.querySelectorAll('.dots__dot');
+
+  dots.forEach(function (dot) {
+    dot.classList.remove('dots__dot--active');
+  });
+
+  dots[slideNumber].classList.add('dots__dot--active');
+}
+
+dotContainer.addEventListener('click', function (e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slideNumber = Number(e.target.dataset.slide);
+    currentSlide = slideNumber;
+    showSlides(currentSlide);
+    activateDot(currentSlide);
+  }
+});
+
+createDots();
+activateDot(0);
